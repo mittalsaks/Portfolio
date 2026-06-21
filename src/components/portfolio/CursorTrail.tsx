@@ -1,70 +1,104 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-// Lightweight neon cursor trail. Skips on touch and reduced-motion.
 export function CursorTrail() {
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [scrollPct, setScrollPct] = useState(0);
 
+  // Custom cursor + lagging ring
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (matchMedia("(hover: none)").matches) return;
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    let raf = 0;
+    const move = (e: MouseEvent) => {
+      mx = e.clientX; my = e.clientY;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${mx}px, ${my}px) translate(-50%,-50%)`;
+      }
+    };
+    const tick = () => {
+      rx += (mx - rx) * 0.15;
+      ry += (my - ry) * 0.15;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${rx}px, ${ry}px) translate(-50%,-50%)`;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    window.addEventListener("mousemove", move);
+    raf = requestAnimationFrame(tick);
+    return () => {
+      window.removeEventListener("mousemove", move);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
+  // Scroll progress
+  useEffect(() => {
+    const onScroll = () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      setScrollPct(Math.min(100, Math.max(0, pct)));
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Matrix code rain
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const resize = () => {
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = window.innerWidth + "px";
-      canvas.style.height = window.innerHeight + "px";
-      ctx.scale(dpr, dpr);
-    };
-    resize();
-    window.addEventListener("resize", resize);
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+    const fontSize = 14;
+    let columns = Math.floor(width / fontSize);
+    let drops: number[] = Array(columns).fill(0).map(() => Math.random() * -100);
+    const chars = "01ABCDEF{};</>$#*+=-_アイウエオカキクケコｱｲｳｴｵ";
 
-    const points: { x: number; y: number; age: number }[] = [];
-    const onMove = (e: PointerEvent) => {
-      points.push({ x: e.clientX, y: e.clientY, age: 0 });
-      if (points.length > 30) points.shift();
+    const onResize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      columns = Math.floor(width / fontSize);
+      drops = Array(columns).fill(0).map(() => Math.random() * -100);
     };
-    window.addEventListener("pointermove", onMove);
+    window.addEventListener("resize", onResize);
 
     let raf = 0;
-    const tick = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < points.length; i++) {
-        const p = points[i];
-        p.age += 1;
-        const alpha = Math.max(0, 1 - p.age / 40);
-        const r = 8 * alpha + 1;
-        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 3);
-        grad.addColorStop(0, `rgba(0,212,255,${0.55 * alpha})`);
-        grad.addColorStop(1, "rgba(157,0,255,0)");
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, r * 3, 0, Math.PI * 2);
-        ctx.fill();
+    const draw = () => {
+      ctx.fillStyle = "rgba(10,10,15,0.08)";
+      ctx.fillRect(0, 0, width, height);
+      ctx.font = `${fontSize}px "JetBrains Mono", monospace`;
+      for (let i = 0; i < drops.length; i++) {
+        const ch = chars[Math.floor(Math.random() * chars.length)];
+        const y = drops[i] * fontSize;
+        ctx.fillStyle = y < 30 ? "rgba(180,255,220,0.9)" : "rgba(0,255,135,0.45)";
+        ctx.fillText(ch, i * fontSize, y);
+        if (y > height && Math.random() > 0.975) drops[i] = 0;
+        drops[i] += 0.45;
       }
-      for (let i = points.length - 1; i >= 0; i--) if (points[i].age > 40) points.splice(i, 1);
-      raf = requestAnimationFrame(tick);
+      raf = requestAnimationFrame(draw);
     };
-    raf = requestAnimationFrame(tick);
-
+    raf = requestAnimationFrame(draw);
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", resize);
-      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("resize", onResize);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[60] mix-blend-screen"
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.03]"
+      />
+      <div className="scroll-progress" style={{ width: `${scrollPct}%` }} aria-hidden="true" />
+      <div ref={dotRef} className="cursor-dot" aria-hidden="true" />
+      <div ref={ringRef} className="cursor-ring" aria-hidden="true" />
+    </>
   );
 }

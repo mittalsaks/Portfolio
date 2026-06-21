@@ -10,6 +10,7 @@ const projectSchema = new mongoose.Schema(
     demo:        { type: String, default: "" },
     image:       { type: String, required: true },
     featured:    { type: Boolean, default: false },
+    notesUrl:    { type: String, default: "" },
     order:       { type: Number, default: 0 },
   },
   { timestamps: true }

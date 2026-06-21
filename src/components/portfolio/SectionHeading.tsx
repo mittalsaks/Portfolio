@@ -1,28 +1,27 @@
 interface Props {
-  index: string; // e.g. "01"
+  index: string;
   title: string;
   subtitle?: string;
   accent?: "blue" | "purple" | "gold";
 }
 
-const accentMap = {
-  blue: "text-[#00d4ff]",
-  purple: "text-[#c98bff]",
-  gold: "text-[#ffd700]",
-};
-
-export function SectionHeading({ index, title, subtitle, accent = "blue" }: Props) {
+export function SectionHeading({ index, title, subtitle }: Props) {
   return (
-    <div className="mb-12">
-      <p className={`font-mono text-sm ${accentMap[accent]}`}>
-        <span className="text-foreground/40">#</span>
-        {index}
-      </p>
-      <h2 className="mt-2 font-mono text-3xl font-bold text-foreground sm:text-4xl">
+    <div className="mb-12 flex flex-col gap-3">
+      <div className="flex items-center gap-3">
+        <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[color:var(--c-accent)] text-glow-green">
+          $ {title.toLowerCase()} <span className="text-[color:var(--c-text-dim)]">— /{index}</span>
+        </span>
+        <span className="h-px w-12 bg-[color:var(--c-accent)]/40" />
+      </div>
+      <h2 className="font-display text-3xl font-bold leading-[1.05] tracking-[-0.03em] text-3d-sm text-[color:var(--c-text)] sm:text-4xl lg:text-5xl">
         {title}
-        <span className={accentMap[accent]}>.</span>
       </h2>
-      {subtitle && <p className="mt-3 max-w-2xl text-foreground/70">{subtitle}</p>}
+      {subtitle && (
+        <p className="max-w-2xl text-base leading-relaxed text-[color:var(--c-text-muted)]">
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 }

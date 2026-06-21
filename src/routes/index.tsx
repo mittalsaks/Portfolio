@@ -13,13 +13,13 @@ import { CursorTrail } from "@/components/portfolio/CursorTrail";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sakshi Mittal — Full Stack Developer" }, // [REPLACE WITH YOUR NAME]
+      { title: "Alex Doe — Full Stack Developer" }, // [REPLACE WITH YOUR NAME]
       {
         name: "description",
         content:
-          "Portfolio of Sakshi Mittal — Full Stack Developer. Projects, hackathons, research papers, and experience.",
+          "Portfolio of Alex Doe — Full Stack Developer. Projects, hackathons, research papers, and experience.",
       },
-      { property: "og:title", content: "Sakshi Mittal — Full Stack Developer" },
+      { property: "og:title", content: "Alex Doe — Full Stack Developer" },
       {
         property: "og:description",
         content: "Projects, hackathons, research papers, and experience.",
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="relative min-h-dvh bg-[#0a0a0f] text-foreground antialiased">
+    <div className="relative min-h-dvh bg-[color:var(--c-bg)] text-[color:var(--c-text)] antialiased">
       <CursorTrail />
       <Navbar />
       <main>

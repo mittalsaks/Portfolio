@@ -1,5 +1,5 @@
 const Contact = require("../models/Contact");
-const { sendContactNotification } = require("../config/email");
+const { sendContactEmail } = require("../config/email");
 
 // @route   POST /api/contact
 // @access  Public
@@ -24,18 +24,18 @@ const submitContactForm = async (req, res, next) => {
       ipAddress: req.ip,
     });
 
-    // Try sending email notification, but don't fail the request if email fails
-    // TODO: make sure EMAIL_USER / EMAIL_APP_PASSWORD are set in .env, otherwise this will just log an error
-    try {
-      await sendContactNotification({ name, email, subject, message });
-    } catch (emailError) {
-      console.error("⚠️  Email notification failed (message still saved to DB):", emailError.message);
-    }
-
+    // Respond immediately once the message is safely saved — don't make the
+    // user wait for two outgoing emails to finish. Email is sent in the
+    // background; if it fails, the error is logged but the request has
+    // already succeeded (message is safe in the DB either way).
     res.status(201).json({
       success: true,
       message: "Message sent successfully! I'll get back to you soon.",
       data: { id: contact._id },
+    });
+
+    sendContactEmail({ name, email, subject, message }).catch((emailError) => {
+      console.error("⚠️  Email notification failed (message still saved to DB):", emailError.message);
     });
   } catch (error) {
     next(error);

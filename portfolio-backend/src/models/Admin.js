@@ -6,6 +6,10 @@ const adminSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true },
     name: { type: String, default: "Admin" },
+    otpHash: { type: String, default: null },
+    otpExpiresAt: { type: Date, default: null },
+    resetTokenHash: { type: String, default: null },
+    resetTokenExpiresAt: { type: Date, default: null },
   },
   { timestamps: true }
 );

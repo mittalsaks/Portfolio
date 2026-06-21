@@ -2,6 +2,7 @@ const express = require("express");
 const cors    = require("cors");
 const helmet  = require("helmet");
 const morgan  = require("morgan");
+const cookieParser = require("cookie-parser");
 
 const connectDB = require("./config/db");
 const { notFound, errorHandler } = require("./middleware/errorHandler");
@@ -26,9 +27,12 @@ app.use(helmet());
 
 // CORS
 const allowedOrigins = [
-  process.env.FRONTEND_URL || "http://localhost:5173",
+  process.env.FRONTEND_URL || "http://localhost:8080",
   "http://localhost:3000",
   "http://localhost:5173",
+  "http://localhost:8080",
+  "https://portfolio-mittalsaks.vercel.app",
+  "https://mittalsaks.vercel.app",
 ];
 app.use(
   cors({
@@ -42,7 +46,7 @@ app.use(
 
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }

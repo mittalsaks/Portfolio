@@ -6,7 +6,6 @@ const mongoose = require("mongoose");
 const skillItemSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
-    level: { type: Number, min: 0, max: 100, required: true }, // used for neon fill animation width
   },
   { _id: false }
 );
@@ -15,11 +14,20 @@ const skillGroupSchema = new mongoose.Schema(
   {
     category: {
       type: String,
-      enum: ["Frontend", "Backend", "Databases", "DevOps & Tools", "Languages"],
+      enum: [
+        "Frontend",
+        "Backend",
+        "Databases",
+        "DevOps & Tools",
+        "Languages",
+        "Frameworks & Libraries",
+        "Tools & Platforms",
+      ],
       required: true,
       unique: true,
     },
     items: [skillItemSchema],
+    notesUrl: { type: String, default: "" },
     order: { type: Number, default: 0 },
   },
   { timestamps: true }

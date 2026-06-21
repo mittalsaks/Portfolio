@@ -1,42 +1,102 @@
 import { useState } from "react";
 import { Mail, MapPin, Sparkles, Github, Linkedin, Twitter, Send } from "lucide-react";
-import { profile } from "./data";
+import { useQuery } from "@tanstack/react-query";
+import { profileApi, contactApi } from "@/lib/api/resources";
 import { SectionHeading } from "./SectionHeading";
 import { Reveal } from "./Reveal";
 
 export function Contact() {
   const [sent, setSent] = useState(false);
+  const {
+    data: profile,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["profile"],
+    queryFn: profileApi.getProfile,
+  });
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget).entries());
-    // TODO: wire this up to your backend / email service (Resend, Formspree, etc.)
-    console.log("[contact form]", data);
-    setSent(true);
-    e.currentTarget.reset();
+    setSubmitError(null);
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form).entries()) as {
+      name: string;
+      email: string;
+      subject: string;
+      message: string;
+    };
+
+    setSubmitting(true);
+    try {
+      await contactApi.submit(data);
+      setSent(true);
+      form.reset();
+    } catch (err) {
+      setSubmitError("Couldn't send your message. Please try again in a moment.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <section
+        id="contact"
+        className="mx-auto max-w-7xl px-4 py-24 text-center font-mono text-sm text-[color:var(--c-text-dim)] sm:px-6 lg:px-8"
+      >
+        // loading profile...
+      </section>
+    );
+  }
+
+  if (isError || !profile) {
+    return (
+      <section
+        id="contact"
+        className="mx-auto max-w-7xl px-4 py-24 text-center font-mono text-sm text-destructive sm:px-6 lg:px-8"
+      >
+        // failed to load profile
+      </section>
+    );
   }
 
   return (
     <section
       id="contact"
       aria-labelledby="contact-title"
-      className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8"
+      className="relative isolate mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8"
     >
+      <div
+        aria-hidden="true"
+        className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-screen -z-10 bg-[#0A0A0F]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-screen -z-10 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(0,255,135,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,135,1) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
+      />
       <SectionHeading
         index="06"
         title="Contact"
         subtitle="Have an idea, a role, or just want to nerd out? Drop a line."
-        accent="purple"
       />
       <span id="contact-title" className="sr-only">
         Contact
       </span>
 
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.2fr_1fr]">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1.2fr_1fr]">
         <Reveal>
           <form
             onSubmit={onSubmit}
-            className="glass-card hover-neon-purple rounded-xl p-6 sm:p-8"
+            className="glass-card rounded-md p-6 sm:p-8"
             aria-label="Contact form"
           >
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -47,58 +107,60 @@ export function Contact() {
               <Field label="Subject" name="subject" type="text" required />
             </div>
             <div className="mt-5">
-              <label className="block font-mono text-xs uppercase tracking-wider text-foreground/60">
+              <label className="block text-xs font-medium text-[color:var(--c-text-muted)]">
                 Message
               </label>
               <textarea
                 name="message"
                 required
                 rows={5}
-                className="mt-2 w-full rounded-md border border-white/10 bg-white/5 px-3 py-2.5 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:border-[#00d4ff]/60 focus:outline-none focus:ring-2 focus:ring-[#00d4ff]/30"
+                className="mt-2 w-full rounded-md border border-[color:var(--c-border-strong)] bg-[color:var(--c-surface-2)] px-3 py-2.5 text-sm text-[color:var(--c-text)] placeholder:text-[color:var(--c-text-dim)] focus:border-[color:var(--c-accent)] focus:outline-none"
               />
             </div>
-            <button
-              type="submit"
-              className="mt-6 inline-flex items-center gap-2 rounded-md border border-[#00d4ff]/50 bg-[#00d4ff]/10 px-6 py-3 font-mono text-sm font-semibold text-[#00d4ff] hover-neon-blue"
-              style={{ animation: "pulse-neon 3s ease-in-out infinite" }}
-            >
-              <Send className="h-4 w-4" /> {sent ? "Sent — I'll reply soon" : "Send Message"}
+            <button type="submit" disabled={submitting} className="mt-6 btn-primary pulse-glow disabled:opacity-50">
+              <Send className="h-4 w-4" />{" "}
+              {submitting ? "Sending..." : sent ? "Sent — I'll reply soon" : "Send message"}
             </button>
+            {submitError && (
+              <p className="mt-3 text-sm text-destructive" role="alert">
+                {submitError}
+              </p>
+            )}
           </form>
         </Reveal>
 
         <Reveal delay={120}>
-          <aside className="glass-card hover-neon-blue h-full rounded-xl p-6 sm:p-8">
-            <h3 className="font-mono text-sm uppercase tracking-wider text-[#00d4ff]">
+          <aside className="glass-card h-full rounded-md p-6 sm:p-8">
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--c-text-dim)]">
               Find me
             </h3>
             <ul className="mt-5 space-y-4 text-sm">
               <li className="flex items-start gap-3">
-                <Mail className="mt-0.5 h-4 w-4 text-[#00d4ff]" />
+                <Mail className="mt-0.5 h-4 w-4 text-[color:var(--c-text-dim)]" />
                 <a
                   href={profile.socials.email}
-                  className="text-foreground/80 transition-colors hover:text-[#00d4ff]"
+                  className="text-[color:var(--c-text)] transition-colors hover:text-[color:var(--c-accent)]"
                 >
                   {profile.email}
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <MapPin className="mt-0.5 h-4 w-4 text-[#9d00ff]" />
-                <span className="text-foreground/80">{profile.location}</span>
+                <MapPin className="mt-0.5 h-4 w-4 text-[color:var(--c-text-dim)]" />
+                <span className="text-[color:var(--c-text-muted)]">{profile.location}</span>
               </li>
               <li className="flex items-start gap-3">
-                <Sparkles className="mt-0.5 h-4 w-4 text-[#ffd700]" />
-                <span className="text-foreground/80">
+                <Sparkles className="mt-0.5 h-4 w-4 text-[color:var(--c-text-dim)]" />
+                <span className="text-[color:var(--c-text-muted)]">
                   Available for: {profile.availability}
                 </span>
               </li>
             </ul>
 
-            <div className="mt-8">
-              <h3 className="font-mono text-sm uppercase tracking-wider text-[#00d4ff]">
+            <div className="mt-8 border-t border-[color:var(--c-border)] pt-6">
+              <h3 className="font-mono text-[11px] uppercase tracking-[0.18em] text-[color:var(--c-text-dim)]">
                 Elsewhere
               </h3>
-              <ul className="mt-4 flex gap-3">
+              <ul className="mt-4 flex gap-2">
                 {[
                   { href: profile.socials.github, Icon: Github, label: "GitHub" },
                   { href: profile.socials.linkedin, Icon: Linkedin, label: "LinkedIn" },
@@ -111,9 +173,9 @@ export function Contact() {
                       target="_blank"
                       rel="noreferrer noopener"
                       aria-label={label}
-                      className="flex h-10 w-10 items-center justify-center rounded-md border border-white/10 text-foreground/70 transition-all hover:text-[#00d4ff] hover-neon-blue"
+                      className="flex h-9 w-9 items-center justify-center rounded-md border border-[color:var(--c-border-strong)] text-[color:var(--c-text-muted)] transition-colors hover:border-[color:var(--c-accent)] hover:text-[color:var(--c-text)]"
                     >
-                      <Icon className="h-5 w-5" />
+                      <Icon className="h-4 w-4" />
                     </a>
                   </li>
                 ))}
@@ -139,14 +201,14 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block font-mono text-xs uppercase tracking-wider text-foreground/60">
+      <label className="block text-xs font-medium text-[color:var(--c-text-muted)]">
         {label}
       </label>
       <input
         name={name}
         type={type}
         required={required}
-        className="mt-2 w-full rounded-md border border-white/10 bg-white/5 px-3 py-2.5 font-sans text-sm text-foreground placeholder:text-foreground/30 focus:border-[#00d4ff]/60 focus:outline-none focus:ring-2 focus:ring-[#00d4ff]/30"
+        className="mt-2 w-full rounded-md border border-[color:var(--c-border-strong)] bg-[color:var(--c-surface-2)] px-3 py-2.5 text-sm text-[color:var(--c-text)] placeholder:text-[color:var(--c-text-dim)] focus:border-[color:var(--c-accent)] focus:outline-none"
       />
     </div>
   );

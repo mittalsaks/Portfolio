@@ -61,4 +61,64 @@ const sendContactEmail = async ({ name, email, subject, message }) => {
   await transporter.sendMail(senderMail);
 };
 
-module.exports = { sendContactEmail };
+// Sends the 6-digit login OTP to the admin's own email.
+// Reuses the same transporter/env vars as the contact form — no new setup needed.
+const sendOtpEmail = async (to, otp) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+    throw new Error(
+      "EMAIL_USER or EMAIL_APP_PASSWORD is not set. Check your .env (local) or Vercel Project Settings -> Environment Variables (production)."
+    );
+  }
+
+  const mail = {
+    from: `"Portfolio Admin Login" <${process.env.EMAIL_USER}>`,
+    to,
+    subject: `🔐 Your admin login code: ${otp}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px;">
+        <h2 style="color: #6366f1;">Admin Login Verification</h2>
+        <p>Use this code to finish logging in to your portfolio admin dashboard:</p>
+        <p style="font-size: 32px; font-weight: bold; letter-spacing: 6px; text-align: center; padding: 16px; background: #f9fafb; border-radius: 6px;">
+          ${otp}
+        </p>
+        <p style="color: #6b7280; font-size: 14px;">This code expires in 10 minutes. If you didn't request this, you can ignore this email.</p>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mail);
+};
+
+// Sends a password reset link to the admin's own email.
+const sendPasswordResetEmail = async (to, resetUrl) => {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASSWORD) {
+    throw new Error(
+      "EMAIL_USER or EMAIL_APP_PASSWORD is not set. Check your .env (local) or Vercel Project Settings -> Environment Variables (production)."
+    );
+  }
+
+  const mail = {
+    from: `"Portfolio Admin" <${process.env.EMAIL_USER}>`,
+    to,
+    subject: "🔑 Reset your admin password",
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #e5e7eb; border-radius: 8px;">
+        <h2 style="color: #6366f1;">Password Reset Request</h2>
+        <p>We received a request to reset your portfolio admin password. Click the button below to set a new one:</p>
+        <p style="text-align: center; margin: 24px 0;">
+          <a href="${resetUrl}" style="background: #6366f1; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block;">
+            Reset Password
+          </a>
+        </p>
+        <p style="color: #6b7280; font-size: 13px; word-break: break-all;">
+          Or copy this link: ${resetUrl}
+        </p>
+        <p style="color: #6b7280; font-size: 14px;">This link expires in 10 minutes. If you didn't request this, you can safely ignore this email — your password won't change.</p>
+      </div>
+    `,
+  };
+
+  await transporter.sendMail(mail);
+};
+
+module.exports = { sendContactEmail, sendOtpEmail, sendPasswordResetEmail };

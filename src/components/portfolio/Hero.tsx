@@ -1,9 +1,41 @@
 import { Download, Github, Linkedin, Twitter, Mail, ArrowRight } from "lucide-react";
-import { profile } from "./data";
+import { useQuery } from "@tanstack/react-query";
+import { profileApi } from "@/lib/api/resources";
 import { useTypewriter } from "@/hooks/use-typewriter";
 
 export function Hero() {
-  const typed = useTypewriter(profile.roles);
+  const {
+    data: profile,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["profile"],
+    queryFn: profileApi.getProfile,
+  });
+
+  const typed = useTypewriter(profile?.roles ?? []);
+
+  if (isLoading) {
+    return (
+      <section
+        id="hero"
+        className="flex min-h-dvh items-center justify-center font-mono text-sm text-[color:var(--c-text-dim)]"
+      >
+        // loading profile...
+      </section>
+    );
+  }
+
+  if (isError || !profile) {
+    return (
+      <section
+        id="hero"
+        className="flex min-h-dvh items-center justify-center font-mono text-sm text-destructive"
+      >
+        // failed to load profile
+      </section>
+    );
+  }
 
   return (
     <section
@@ -11,87 +43,103 @@ export function Hero() {
       aria-labelledby="hero-title"
       className="relative isolate flex min-h-dvh items-center overflow-hidden pt-16"
     >
-      {/* animated grid background */}
-      <div aria-hidden="true" className="grid-bg absolute inset-0 -z-10 opacity-60" />
-      {/* gradient blobs */}
+      <div aria-hidden="true" className="grid-bg absolute inset-0 -z-10 opacity-50" />
       <div
         aria-hidden="true"
-        className="absolute -left-32 top-1/4 -z-10 h-96 w-96 rounded-full bg-[#00d4ff]/20 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute -right-32 bottom-0 -z-10 h-96 w-96 rounded-full bg-[#9d00ff]/25 blur-3xl"
-      />
-      {/* radial fade */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,transparent_30%,#0a0a0f_85%)]"
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 50% 40%, rgba(0,255,135,0.10), transparent 70%), linear-gradient(180deg, var(--c-bg) 0%, transparent 25%, transparent 75%, var(--c-bg) 100%)",
+        }}
       />
 
-      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-        <p className="font-mono text-sm text-[#00d4ff]">
-          <span className="text-foreground/50">$</span> whoami
-        </p>
+      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center gap-16 px-4 sm:px-6 lg:grid-cols-12 lg:gap-8 lg:px-8">
+        <div className="lg:col-span-8">
+          <p className="stagger-1 font-mono text-[11px] uppercase tracking-[0.25em] text-[color:var(--c-accent)] text-glow-green">
+            <span className="pulse-glow inline-block">$</span> whoami
+            <span
+              aria-hidden="true"
+              className="ml-1 inline-block h-3 w-[8px] translate-y-[1px] bg-[color:var(--c-accent)]"
+              style={{ animation: "blink-caret 1s steps(2) infinite" }}
+            />
+          </p>
 
-        <h1
-          id="hero-title"
-          className="mt-4 font-mono text-4xl font-bold leading-tight sm:text-6xl lg:text-7xl"
-        >
-          <span className="text-foreground/90">Hi, I'm </span>
-          <span className="text-gradient-neon text-glow-blue">{profile.name}</span>
-        </h1>
-
-        <p className="mt-6 font-mono text-xl text-foreground/80 sm:text-2xl">
-          <span className="text-[#9d00ff]">&gt;</span> {typed}
-          <span
-            aria-hidden="true"
-            className="ml-1 inline-block h-6 w-[2px] translate-y-[3px] bg-[#00d4ff]"
-            style={{ animation: "blink-caret 1s steps(2) infinite" }}
-          />
-        </p>
-
-        <p className="mt-6 max-w-xl text-base text-foreground/70 sm:text-lg">
-          {profile.tagline}
-        </p>
-
-        <div className="mt-10 flex flex-wrap gap-4">
-          <a
-            href="#projects"
-            className="group inline-flex items-center gap-2 rounded-md border border-[#00d4ff]/50 bg-[#00d4ff]/10 px-6 py-3 font-mono text-sm font-semibold text-[#00d4ff] hover-neon-blue"
+          <h1
+            id="hero-title"
+            className="stagger-2 mt-6 font-display text-[clamp(2.75rem,8.5vw,6rem)] font-bold leading-[1.02] tracking-[-0.04em] text-3d text-[color:var(--c-text)]"
           >
-            View My Work
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </a>
-          <a
-            href={profile.resumeUrl}
-            download
-            className="group inline-flex items-center gap-2 rounded-md border border-[#9d00ff]/50 bg-[#9d00ff]/10 px-6 py-3 font-mono text-sm font-semibold text-[#c98bff] hover-neon-purple"
-          >
-            <Download className="h-4 w-4" />
-            Download Resume
-          </a>
+            <span className="block">{profile.name}.</span>
+            <span className="block text-[color:var(--c-accent)] text-glow-green">
+              &lt;FullStack /&gt;
+            </span>
+          </h1>
+
+          <p className="stagger-3 mt-8 font-mono text-sm text-[color:var(--c-text-muted)] sm:text-base">
+            <span className="text-[color:var(--c-accent)]">&gt;</span> {typed}
+            <span
+              aria-hidden="true"
+              className="ml-1 inline-block h-4 w-[2px] translate-y-[2px] bg-[color:var(--c-accent)]"
+              style={{ animation: "blink-caret 1s steps(2) infinite" }}
+            />
+          </p>
+
+          <p className="stagger-4 mt-6 max-w-xl text-base leading-relaxed text-[color:var(--c-text-muted)] sm:text-lg">
+            {profile.tagline}
+          </p>
+
+          <div className="stagger-5 mt-10 flex flex-wrap gap-3">
+            <a href="#projects" className="btn-primary group">
+              View My Work
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </a>
+            <a href={profile.resumeUrl} download className="btn-ghost">
+              <Download className="h-4 w-4" />
+              Download Resume
+            </a>
+          </div>
+
+          <ul className="stagger-6 mt-12 flex items-center gap-2">
+            {[
+              { href: profile.socials.github, Icon: Github, label: "GitHub" },
+              { href: profile.socials.linkedin, Icon: Linkedin, label: "LinkedIn" },
+              { href: profile.socials.twitter, Icon: Twitter, label: "Twitter" },
+              { href: profile.socials.email, Icon: Mail, label: "Email" },
+            ].map(({ href, Icon, label }) => (
+              <li key={label}>
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={label}
+                  className="flex h-10 w-10 items-center justify-center rounded-md border border-[color:var(--c-border-strong)] text-[color:var(--c-text-muted)] transition-all hover:border-[color:var(--c-accent)] hover:text-[color:var(--c-accent)] hover:shadow-[0_0_16px_rgba(0,255,135,0.5)]"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
 
-        <ul className="mt-12 flex items-center gap-5">
-          {[
-            { href: profile.socials.github, Icon: Github, label: "GitHub" },
-            { href: profile.socials.linkedin, Icon: Linkedin, label: "LinkedIn" },
-            { href: profile.socials.twitter, Icon: Twitter, label: "Twitter" },
-            { href: profile.socials.email, Icon: Mail, label: "Email" },
-          ].map(({ href, Icon, label }) => (
-            <li key={label}>
-              <a
-                href={href}
-                target="_blank"
-                rel="noreferrer noopener"
-                aria-label={label}
-                className="flex h-10 w-10 items-center justify-center rounded-md border border-white/10 text-foreground/70 transition-all hover:text-[#00d4ff] hover-neon-blue"
-              >
-                <Icon className="h-5 w-5" />
-              </a>
-            </li>
-          ))}
-        </ul>
+        {/* RIGHT — rotating 3D wireframe cube */}
+        <div className="relative hidden lg:col-span-4 lg:block">
+          <div className="cube-scene mx-auto grid h-[224px] place-items-center opacity-70 -translate-y-6 translate-x-8 scale-[0.7]">
+            <div className="cube">
+              <div className="cube-face f1" />
+              <div className="cube-face f2" />
+              <div className="cube-face f3" />
+              <div className="cube-face f4" />
+              <div className="cube-face f5" />
+              <div className="cube-face f6" />
+            </div>
+          </div>
+          <p className="mt-6 text-center font-mono text-[10px] uppercase tracking-[0.25em] text-[color:var(--c-text-dim)]">
+            v2026.06 · {profile.location ?? "remote"}
+          </p>
+        </div>
+      </div>
+
+      <div className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.25em] text-[color:var(--c-accent)] md:block">
+        scroll ↓
       </div>
     </section>
   );
