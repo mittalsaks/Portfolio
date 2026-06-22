@@ -9,11 +9,18 @@ class ApiError extends Error {
   }
 }
 async function apiRequest(path, options = {}) {
+  let token = null;
+  if (typeof window !== "undefined") {
+    try {
+      token = window.localStorage.getItem("admin_token");
+    } catch {
+    }
+  }
   const res = await fetch(`${API_URL}${path}`, {
     credentials: "include",
-    // required so the httpOnly admin cookie is sent
     headers: {
       "Content-Type": "application/json",
+      ...token ? { Authorization: `Bearer ${token}` } : {},
       ...options.headers ?? {}
     },
     ...options
@@ -43,7 +50,9 @@ const authApi = {
       }
     );
     if (data.token) {
-      localStorage.setItem("admin_token", data.token);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("admin_token", data.token);
+      }
     }
     return data;
   },

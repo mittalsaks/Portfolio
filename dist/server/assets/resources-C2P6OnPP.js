@@ -1,4 +1,4 @@
-import { b as apiRequest, c as createCrudApi } from "./CursorTrail-BFdyBvhh.js";
+import { b as apiRequest, c as createCrudApi } from "./CursorTrail-q_7RbpRR.js";
 const projectsApi = createCrudApi("projects");
 const skillsApi = createCrudApi("skills");
 const experienceApi = createCrudApi("experience");
