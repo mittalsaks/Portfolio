@@ -349,12 +349,14 @@ const emptyProject = {
   github: "",
   demo: "",
   image: "",
+  notesUrl: "",
   featured: false,
   order: 0
 };
 const emptySkill = {
   category: "Frontend",
   items: [],
+  notesUrl: "",
   order: 0
 };
 const emptyExperience = {
@@ -375,6 +377,7 @@ const emptyHackathon = {
   date: "",
   github: "",
   demo: "",
+  notesUrl: "",
   order: 0
 };
 const emptyResearch = {
@@ -509,6 +512,10 @@ function ProjectsPanel() {
           ...form,
           image: e.target.value
         }), className: "w-full admin-input" }),
+        /* @__PURE__ */ jsx("input", { placeholder: "Notes URL (optional — private link to project notes)", value: form.notesUrl ?? "", onChange: (e) => setForm({
+          ...form,
+          notesUrl: e.target.value
+        }), className: "w-full admin-input" }),
         /* @__PURE__ */ jsxs("label", { className: "flex items-center gap-2 text-sm text-muted-foreground", children: [
           /* @__PURE__ */ jsx("input", { type: "checkbox", checked: form.featured ?? false, onChange: (e) => setForm({
             ...form,
@@ -520,8 +527,12 @@ function ProjectsPanel() {
           ...form,
           order: Number(e.target.value)
         }), className: "w-full admin-input" }),
+        /* @__PURE__ */ jsx("input", { placeholder: "Notes URL (optional)", value: form.notesUrl ?? "", onChange: (e) => setForm({
+          ...form,
+          notesUrl: e.target.value
+        }), className: "w-full admin-input" }),
         /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
-          /* @__PURE__ */ jsx("button", { type: "submit", disabled: saving, className: "btn-primary disabled:opacity-50", children: saving ? "Saving..." : editingId ? "Update Project" : "Add Project" }),
+          /* @__PURE__ */ jsx("button", { type: "submit", disabled: saving, className: "btn-primary disabled:opacity-50", children: saving ? "Saving..." : editingId ? "Update Category" : "Add Category" }),
           editingId && /* @__PURE__ */ jsx("button", { type: "button", onClick: resetForm, className: "rounded-lg border border-white/10 px-4 py-2 font-mono text-sm text-muted-foreground hover:bg-white/5", children: "Cancel" })
         ] })
       ] })
@@ -838,6 +849,10 @@ function HackathonsPanel() {
         /* @__PURE__ */ jsx("input", { placeholder: "Demo URL (leave blank if none — e.g. hackathon IP-restricted project)", value: form.demo ?? "", onChange: (e) => setForm({
           ...form,
           demo: e.target.value
+        }), className: "w-full admin-input" }),
+        /* @__PURE__ */ jsx("input", { placeholder: "Notes URL (optional)", value: form.notesUrl ?? "", onChange: (e) => setForm({
+          ...form,
+          notesUrl: e.target.value
         }), className: "w-full admin-input" }),
         /* @__PURE__ */ jsx("input", { type: "number", placeholder: "Order", value: form.order ?? 0, onChange: (e) => setForm({
           ...form,

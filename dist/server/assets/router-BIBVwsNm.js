@@ -164,7 +164,7 @@ const Route$1 = createFileRoute("/admin/forgot-password")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-const $$splitComponentImporter = () => import("./dashboard-TDG_BchV.js");
+const $$splitComponentImporter = () => import("./dashboard-DAJFwGje.js");
 const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
     meta: [{

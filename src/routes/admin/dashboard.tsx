@@ -518,12 +518,14 @@ const emptyProject: Partial<Project> = {
   github: "",
   demo: "",
   image: "",
+  notesUrl: "",
   featured: false,
   order: 0,
 };
 const emptySkill: Partial<Skill> = {
   category: "Frontend",
   items: [],
+  notesUrl: "",
   order: 0,
 };
 const emptyExperience: Partial<Experience> = {
@@ -544,6 +546,7 @@ const emptyHackathon: Partial<Hackathon> = {
   date: "",
   github: "",
   demo: "",
+  notesUrl: "",
   order: 0,
 };
 const emptyResearch: Partial<ResearchPaper> = {
@@ -730,6 +733,12 @@ function ProjectsPanel() {
             onChange={(e) => setForm({ ...form, image: e.target.value })}
             className="w-full admin-input"
           />
+          <input
+            placeholder="Notes URL (optional — private link to project notes)"
+            value={form.notesUrl ?? ""}
+            onChange={(e) => setForm({ ...form, notesUrl: e.target.value })}
+            className="w-full admin-input"
+          />
           <label className="flex items-center gap-2 text-sm text-muted-foreground">
             <input
               type="checkbox"
@@ -745,6 +754,12 @@ function ProjectsPanel() {
             onChange={(e) => setForm({ ...form, order: Number(e.target.value) })}
             className="w-full admin-input"
           />
+          <input
+            placeholder="Notes URL (optional)"
+            value={form.notesUrl ?? ""}
+            onChange={(e) => setForm({ ...form, notesUrl: e.target.value })}
+            className="w-full admin-input"
+          />
 
           <div className="flex gap-2">
             <button
@@ -752,7 +767,7 @@ function ProjectsPanel() {
               disabled={saving}
               className="btn-primary disabled:opacity-50"
             >
-              {saving ? "Saving..." : editingId ? "Update Project" : "Add Project"}
+              {saving ? "Saving..." : editingId ? "Update Category" : "Add Category"}
             </button>
             {editingId && (
               <button
@@ -1258,6 +1273,12 @@ function HackathonsPanel() {
             placeholder="Demo URL (leave blank if none — e.g. hackathon IP-restricted project)"
             value={form.demo ?? ""}
             onChange={(e) => setForm({ ...form, demo: e.target.value })}
+            className="w-full admin-input"
+          />
+          <input
+            placeholder="Notes URL (optional)"
+            value={form.notesUrl ?? ""}
+            onChange={(e) => setForm({ ...form, notesUrl: e.target.value })}
             className="w-full admin-input"
           />
           <input
