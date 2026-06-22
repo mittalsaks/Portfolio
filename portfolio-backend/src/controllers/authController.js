@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const Admin = require("../models/Admin");
-const { sendOtpEmail, sendPasswordResetEmail } = require("../config/email");
+const { sendOtpEmail, sendPasswordResetEmail } = require("../utils/email");
 
 const OTP_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
 const RESET_TOKEN_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
