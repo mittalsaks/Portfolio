@@ -33,6 +33,7 @@ const allowedOrigins = [
   "http://localhost:8080",
   "https://portfolio-mittalsaks.vercel.app",
   "https://mittalsaks.vercel.app",
+  "https://portfolio-g8b567.vercel.app",
 ];
 app.use(
   cors({
