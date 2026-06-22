@@ -34,13 +34,19 @@ const authApi = {
       body: JSON.stringify({ email, password })
     }
   ),
-  verifyOtp: (email, otp) => apiRequest(
-    "/auth/verify-otp",
-    {
-      method: "POST",
-      body: JSON.stringify({ email, otp })
+  verifyOtp: async (email, otp) => {
+    const data = await apiRequest(
+      "/auth/verify-otp",
+      {
+        method: "POST",
+        body: JSON.stringify({ email, otp })
+      }
+    );
+    if (data.token) {
+      localStorage.setItem("admin_token", data.token);
     }
-  ),
+    return data;
+  },
   forgotPassword: (email) => apiRequest("/auth/forgot-password", {
     method: "POST",
     body: JSON.stringify({ email })
@@ -49,10 +55,18 @@ const authApi = {
     method: "POST",
     body: JSON.stringify({ email, token, newPassword })
   }),
-  logout: () => apiRequest("/auth/logout", {
-    method: "POST"
-  }),
-  me: () => apiRequest("/auth/me"),
+  logout: async () => {
+    localStorage.removeItem("admin_token");
+    return apiRequest("/auth/logout", {
+      method: "POST"
+    });
+  },
+  me: () => {
+    const token = localStorage.getItem("admin_token");
+    return apiRequest("/auth/me", {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    });
+  },
   changePassword: async (currentPassword, newPassword) => {
     const res = await fetch(`${API_URL}/auth/change-password`, {
       method: "PUT",

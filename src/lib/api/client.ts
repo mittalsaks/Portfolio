@@ -78,14 +78,19 @@ export const authApi = {
       }
     ),
 
-  verifyOtp: (email: string, otp: string) =>
-    apiRequest<{ success: boolean; token: string; admin: AdminUser }>(
+  verifyOtp: async (email: string, otp: string) => {
+    const data = await apiRequest<{ success: boolean; token: string; admin: AdminUser }>(
       "/auth/verify-otp",
       {
         method: "POST",
         body: JSON.stringify({ email, otp }),
       }
-    ),
+    );
+    if (data.token) {
+      localStorage.setItem("admin_token", data.token);
+    }
+    return data;
+  },
 
   forgotPassword: (email: string) =>
     apiRequest<{ success: boolean; message: string }>("/auth/forgot-password", {
@@ -99,12 +104,19 @@ export const authApi = {
       body: JSON.stringify({ email, token, newPassword }),
     }),
 
-  logout: () =>
-    apiRequest<ApiMessageResponse>("/auth/logout", {
+  logout: async () => {
+    localStorage.removeItem("admin_token");
+    return apiRequest<ApiMessageResponse>("/auth/logout", {
       method: "POST",
-    }),
+    });
+  },
 
-  me: () => apiRequest<ApiItemResponse<AdminUser>>("/auth/me"),
+  me: () => {
+    const token = localStorage.getItem("admin_token");
+    return apiRequest<ApiItemResponse<AdminUser>>("/auth/me", {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  },
   changePassword: async (currentPassword: string, newPassword: string) => {
     const res = await fetch(`${API_URL}/auth/change-password`, {
       method: "PUT",
