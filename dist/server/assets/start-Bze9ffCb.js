@@ -1,4 +1,4 @@
-import { c as createMiddleware } from "./server-BkmQeEbh.js";
+import { c as createMiddleware } from "./server-Cc5n3X77.js";
 import { r as renderErrorPage } from "../server.js";
 import "node:async_hooks";
 import "h3-v2";

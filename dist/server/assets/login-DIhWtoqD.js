@@ -1,7 +1,7 @@
 import { jsxs, jsx } from "react/jsx-runtime";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { C as CursorTrail, a as authApi, A as ApiError } from "./CursorTrail-ABimkZyP.js";
+import { C as CursorTrail, a as authApi, A as ApiError } from "./CursorTrail-DkmGBnWL.js";
 function AdminLogin() {
   const navigate = useNavigate();
   const [step, setStep] = useState("credentials");

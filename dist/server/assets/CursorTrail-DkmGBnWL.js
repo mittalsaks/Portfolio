@@ -1,6 +1,6 @@
 import { jsxs, Fragment, jsx } from "react/jsx-runtime";
 import { useRef, useState, useEffect } from "react";
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://portfolio-backend-xvo6.onrender.com/api";
 class ApiError extends Error {
   status;
   constructor(message, status) {

@@ -113,7 +113,7 @@ function RootComponent() {
   const { queryClient } = Route$5.useRouteContext();
   return /* @__PURE__ */ jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsx(Outlet, {}) });
 }
-const $$splitComponentImporter$4 = () => import("./index-iXjUUVmm.js");
+const $$splitComponentImporter$4 = () => import("./index-BBTtBKee.js");
 const Route$4 = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -137,7 +137,7 @@ const Route$4 = createFileRoute("/")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$4, "component")
 });
-const $$splitComponentImporter$3 = () => import("./reset-password-uonF14Yh.js");
+const $$splitComponentImporter$3 = () => import("./reset-password-hVUUg4hF.js");
 const Route$3 = createFileRoute("/admin/reset-password")({
   head: () => ({
     meta: [{
@@ -146,7 +146,7 @@ const Route$3 = createFileRoute("/admin/reset-password")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$3, "component")
 });
-const $$splitComponentImporter$2 = () => import("./login-ikROadRA.js");
+const $$splitComponentImporter$2 = () => import("./login-DIhWtoqD.js");
 const Route$2 = createFileRoute("/admin/login")({
   head: () => ({
     meta: [{
@@ -155,7 +155,7 @@ const Route$2 = createFileRoute("/admin/login")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$2, "component")
 });
-const $$splitComponentImporter$1 = () => import("./forgot-password-CsCUDR7r.js");
+const $$splitComponentImporter$1 = () => import("./forgot-password-CwHU_jfZ.js");
 const Route$1 = createFileRoute("/admin/forgot-password")({
   head: () => ({
     meta: [{
@@ -164,7 +164,7 @@ const Route$1 = createFileRoute("/admin/forgot-password")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-const $$splitComponentImporter = () => import("./dashboard-CgW2Dule.js");
+const $$splitComponentImporter = () => import("./dashboard-CJyBezYr.js");
 const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
     meta: [{
