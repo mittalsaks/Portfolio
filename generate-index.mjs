@@ -5,7 +5,7 @@ const assetsDir = 'dist/client/assets';
 const files = readdirSync(assetsDir);
 
 const cssFile = files.find(f => f.endsWith('.css'));
-const jsFiles = files.filter(f => f.endsWith('.js') && f.startsWith('index-'));
+const jsFiles = files.filter(f => f.endsWith('.js') && (f.startsWith('index-') || f.startsWith('start-')));
 const jsFile = jsFiles.sort((a, b) => {
   const sizeA = readFileSync(join(assetsDir, a)).length;
   const sizeB = readFileSync(join(assetsDir, b)).length;
