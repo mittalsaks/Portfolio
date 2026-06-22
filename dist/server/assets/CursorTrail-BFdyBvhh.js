@@ -67,20 +67,10 @@ const authApi = {
       headers: token ? { Authorization: `Bearer ${token}` } : {}
     });
   },
-  changePassword: async (currentPassword, newPassword) => {
-    const res = await fetch(`${API_URL}/auth/change-password`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      // sends the httpOnly cookie
-      body: JSON.stringify({ currentPassword, newPassword })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      throw new ApiError(data.message || "Failed to change password", res.status);
-    }
-    return data;
-  }
+  changePassword: (currentPassword, newPassword) => apiRequest("/auth/change-password", {
+    method: "PUT",
+    body: JSON.stringify({ currentPassword, newPassword })
+  })
 };
 function createCrudApi(resource) {
   const base = `/${resource}`;

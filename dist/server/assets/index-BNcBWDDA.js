@@ -3,12 +3,12 @@ import * as React from "react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { X, Menu, ArrowRight, Download, Github, Linkedin, Twitter, Mail, Star, ExternalLink, Trophy, Users, Calendar, FileText, GraduationCap, BookOpen, Send, MapPin, Sparkles } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { p as profileApi, a as projectsApi, h as hackathonsApi, r as researchApi, s as skillsApi, e as experienceApi, c as contactApi } from "./resources-DIhePhX_.js";
+import { p as profileApi, a as projectsApi, h as hackathonsApi, r as researchApi, s as skillsApi, e as experienceApi, c as contactApi } from "./resources-DAfsotux.js";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { C as CursorTrail } from "./CursorTrail-m8pXc8Zf.js";
+import { C as CursorTrail } from "./CursorTrail-BFdyBvhh.js";
 function cn(...inputs) {
   return twMerge(clsx(inputs));
 }

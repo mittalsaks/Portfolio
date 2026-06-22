@@ -1,8 +1,8 @@
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { a as authApi, C as CursorTrail, A as ApiError } from "./CursorTrail-m8pXc8Zf.js";
-import { p as profileApi, a as projectsApi, s as skillsApi, e as experienceApi, h as hackathonsApi, r as researchApi } from "./resources-DIhePhX_.js";
+import { a as authApi, C as CursorTrail, A as ApiError } from "./CursorTrail-BFdyBvhh.js";
+import { p as profileApi, a as projectsApi, s as skillsApi, e as experienceApi, h as hackathonsApi, r as researchApi } from "./resources-DAfsotux.js";
 function AdminDashboard() {
   const navigate = useNavigate();
   const [checkingAuth, setCheckingAuth] = useState(true);

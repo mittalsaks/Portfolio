@@ -117,22 +117,11 @@ export const authApi = {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },
-  changePassword: async (currentPassword: string, newPassword: string) => {
-    const res = await fetch(`${API_URL}/auth/change-password`, {
+  changePassword: (currentPassword: string, newPassword: string) =>
+    apiRequest<{ success: boolean; message: string }>("/auth/change-password", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include", // sends the httpOnly cookie
       body: JSON.stringify({ currentPassword, newPassword }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new ApiError(data.message || "Failed to change password", res.status);
-    }
-
-    return data; // { success: true, message: "Password updated successfully" }
-  },
+    }),
 };
 
 // ---- Generic CRUD factory ----
