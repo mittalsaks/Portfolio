@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { allApi, type AllData } from "@/lib/api/resources";
 import { Navbar } from "@/components/portfolio/Navbar";
 import { Hero } from "@/components/portfolio/Hero";
 import { Projects } from "@/components/portfolio/Projects";
@@ -13,7 +15,7 @@ import { CursorTrail } from "@/components/portfolio/CursorTrail";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sakshi Mittal — Full Stack Developer & AI/ML Engineer" }, // [REPLACE WITH YOUR NAME]
+      { title: "Sakshi Mittal — Full Stack Developer & AI/ML Engineer" },
       {
         name: "description",
         content:
@@ -30,20 +32,27 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  // ONE network request instead of 6 — all components read from this cache
+  const { data, isLoading, isError } = useQuery<AllData>({
+    queryKey: ["all"],
+    queryFn: allApi.getAll,
+    staleTime: 5 * 60 * 1000, // treat data as fresh for 5 min (matches backend cache TTL)
+  });
+
   return (
     <div className="relative min-h-dvh bg-[color:var(--c-bg)] text-[color:var(--c-text)] antialiased">
       <CursorTrail />
       <Navbar />
       <main>
-        <Hero />
-        <Projects />
-        <Hackathons />
-        <Research />
-        <Skills />
-        <Experience />
+        <Hero        profile={data?.profile}    isLoading={isLoading} isError={isError} />
+        <Projects    projects={data?.projects}  isLoading={isLoading} isError={isError} />
+        <Hackathons  hackathons={data?.hackathons} isLoading={isLoading} isError={isError} />
+        <Research    research={data?.research}  isLoading={isLoading} isError={isError} />
+        <Skills      skills={data?.skills}      isLoading={isLoading} isError={isError} />
+        <Experience  experience={data?.experience} isLoading={isLoading} isError={isError} />
         <Contact />
       </main>
-      <Footer />
+      <Footer profile={data?.profile} />
     </div>
   );
 }

@@ -113,27 +113,21 @@ function RootComponent() {
   const { queryClient } = Route$5.useRouteContext();
   return /* @__PURE__ */ jsx(QueryClientProvider, { client: queryClient, children: /* @__PURE__ */ jsx(Outlet, {}) });
 }
-const $$splitComponentImporter$4 = () => import("./index-Dq4yyl5J.js");
+const $$splitComponentImporter$4 = () => import("./index-D15EOAs5.js");
 const Route$4 = createFileRoute("/")({
   head: () => ({
-    meta: [
-      {
-        title: "Sakshi Mittal — Full Stack Developer & AI/ML Engineer"
-      },
-      // [REPLACE WITH YOUR NAME]
-      {
-        name: "description",
-        content: "Portfolio of Sakshi Mittal — Full Stack Developer & AI/ML Engineer. Projects, hackathons, research and experience."
-      },
-      {
-        property: "og:title",
-        content: "Sakshi Mittal — Full Stack Developer & AI/ML Engineer"
-      },
-      {
-        property: "og:description",
-        content: "Projects, hackathons, research papers, and experience."
-      }
-    ]
+    meta: [{
+      title: "Sakshi Mittal — Full Stack Developer & AI/ML Engineer"
+    }, {
+      name: "description",
+      content: "Portfolio of Sakshi Mittal — Full Stack Developer & AI/ML Engineer. Projects, hackathons, research and experience."
+    }, {
+      property: "og:title",
+      content: "Sakshi Mittal — Full Stack Developer & AI/ML Engineer"
+    }, {
+      property: "og:description",
+      content: "Projects, hackathons, research papers, and experience."
+    }]
   }),
   component: lazyRouteComponent($$splitComponentImporter$4, "component")
 });
@@ -164,7 +158,7 @@ const Route$1 = createFileRoute("/admin/forgot-password")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-const $$splitComponentImporter = () => import("./dashboard-DAJFwGje.js");
+const $$splitComponentImporter = () => import("./dashboard-Y00wiZ2d.js");
 const Route = createFileRoute("/admin/dashboard")({
   head: () => ({
     meta: [{

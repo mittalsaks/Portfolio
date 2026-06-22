@@ -19,8 +19,12 @@ const contactApi = {
     body: JSON.stringify(payload)
   })
 };
+const allApi = {
+  getAll: () => apiRequest("/all").then((r) => r.data)
+};
 export {
   projectsApi as a,
+  allApi as b,
   contactApi as c,
   experienceApi as e,
   hackathonsApi as h,

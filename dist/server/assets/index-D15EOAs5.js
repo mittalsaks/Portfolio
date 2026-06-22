@@ -1,9 +1,9 @@
 import { jsxs, jsx } from "react/jsx-runtime";
+import { useQuery } from "@tanstack/react-query";
+import { p as profileApi, a as projectsApi, h as hackathonsApi, r as researchApi, s as skillsApi, e as experienceApi, c as contactApi, b as allApi } from "./resources-D8f9zfdo.js";
 import * as React from "react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { X, Menu, ArrowRight, Download, Github, Linkedin, Twitter, Mail, Star, ExternalLink, Trophy, Users, Calendar, FileText, GraduationCap, BookOpen, Send, MapPin, Sparkles } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { p as profileApi, a as projectsApi, h as hackathonsApi, r as researchApi, s as skillsApi, e as experienceApi, c as contactApi } from "./resources-C2P6OnPP.js";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";
@@ -195,15 +195,7 @@ function useTypewriter(words, { type = 80, erase = 40, pause = 1400 } = {}) {
   }, [text, deleting, i, words, type, erase, pause]);
   return text;
 }
-function Hero() {
-  const {
-    data: profile,
-    isLoading,
-    isError
-  } = useQuery({
-    queryKey: ["profile"],
-    queryFn: profileApi.getProfile
-  });
+function Hero({ profile, isLoading, isError }) {
   const typed = useTypewriter(profile?.roles ?? []);
   if (isLoading) {
     return /* @__PURE__ */ jsx(
@@ -1021,19 +1013,29 @@ function Footer() {
   ] }) });
 }
 function Index() {
+  const {
+    data,
+    isLoading,
+    isError
+  } = useQuery({
+    queryKey: ["all"],
+    queryFn: allApi.getAll,
+    staleTime: 5 * 60 * 1e3
+    // treat data as fresh for 5 min (matches backend cache TTL)
+  });
   return /* @__PURE__ */ jsxs("div", { className: "relative min-h-dvh bg-[color:var(--c-bg)] text-[color:var(--c-text)] antialiased", children: [
     /* @__PURE__ */ jsx(CursorTrail, {}),
     /* @__PURE__ */ jsx(Navbar, {}),
     /* @__PURE__ */ jsxs("main", { children: [
-      /* @__PURE__ */ jsx(Hero, {}),
-      /* @__PURE__ */ jsx(Projects, {}),
-      /* @__PURE__ */ jsx(Hackathons, {}),
-      /* @__PURE__ */ jsx(Research, {}),
-      /* @__PURE__ */ jsx(Skills, {}),
-      /* @__PURE__ */ jsx(Experience, {}),
+      /* @__PURE__ */ jsx(Hero, { profile: data?.profile, isLoading, isError }),
+      /* @__PURE__ */ jsx(Projects, { projects: data?.projects, isLoading, isError }),
+      /* @__PURE__ */ jsx(Hackathons, { hackathons: data?.hackathons, isLoading, isError }),
+      /* @__PURE__ */ jsx(Research, { research: data?.research, isLoading, isError }),
+      /* @__PURE__ */ jsx(Skills, { skills: data?.skills, isLoading, isError }),
+      /* @__PURE__ */ jsx(Experience, { experience: data?.experience, isLoading, isError }),
       /* @__PURE__ */ jsx(Contact, {})
     ] }),
-    /* @__PURE__ */ jsx(Footer, {})
+    /* @__PURE__ */ jsx(Footer, { profile: data?.profile })
   ] });
 }
 export {

@@ -1,18 +1,14 @@
 import { Download, Github, Linkedin, Twitter, Mail, ArrowRight } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { profileApi } from "@/lib/api/resources";
 import { useTypewriter } from "@/hooks/use-typewriter";
+import type { Profile } from "@/lib/api/types";
 
-export function Hero() {
-  const {
-    data: profile,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["profile"],
-    queryFn: profileApi.getProfile,
-  });
+interface HeroProps {
+  profile?: Profile;
+  isLoading: boolean;
+  isError: boolean;
+}
 
+export function Hero({ profile, isLoading, isError }: HeroProps) {
   const typed = useTypewriter(profile?.roles ?? []);
 
   if (isLoading) {
@@ -120,7 +116,6 @@ export function Hero() {
           </ul>
         </div>
 
-        {/* RIGHT — rotating 3D wireframe cube */}
         <div className="relative hidden lg:col-span-4 lg:block">
           <div className="cube-scene mx-auto grid h-[224px] place-items-center opacity-70 -translate-y-6 translate-x-8 scale-[0.7]">
             <div className="cube">
