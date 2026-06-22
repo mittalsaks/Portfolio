@@ -2,9 +2,9 @@
 
 > A full-stack developer portfolio with a custom admin dashboard, OTP-based login, and a live MongoDB-backed CMS.
 
-**Live Site:** [portfolio-sakshi.onrender.com](https://portfolio-sakshi.onrender.com)  
-**Backend API:** [portfolio-backend-xvo6.onrender.com](https://portfolio-backend-xvo6.onrender.com)  
-**GitHub:** [github.com/mittalsaks/Portfolio](https://github.com/mittalsaks/Portfolio)
+[![Live Site](https://img.shields.io/badge/Live%20Site-portfolio--sakshi.onrender.com-brightgreen?style=flat-square)](https://portfolio-sakshi.onrender.com)
+[![Backend](https://img.shields.io/badge/Backend%20API-onrender.com-blue?style=flat-square)](https://portfolio-backend-xvo6.onrender.com)
+[![GitHub](https://img.shields.io/badge/GitHub-mittalsaks%2FPortfolio-black?style=flat-square&logo=github)](https://github.com/mittalsaks/Portfolio)
 
 ---
 
@@ -27,189 +27,130 @@
 | Mongoose | ODM for MongoDB |
 | JWT | Authentication tokens |
 | bcryptjs | Password + OTP hashing |
-| Resend SDK | Email delivery (OTP + contact) |
-| morgan | HTTP request logging |
-| cors | Cross-origin resource sharing |
-| cookie-parser | Cookie handling |
+| Resend SDK | Email delivery |
 | express-rate-limit | Rate limiting on auth routes |
 
 ---
 
 ## 📁 Project Structure
+
+```
 PORTFOLIO/
-
 ├── src/
-
 │   ├── routes/
-
-│   │   ├── index.tsx
-
+│   │   ├── index.tsx                     # Home / public portfolio
 │   │   └── admin/
-
-│   │       ├── login.tsx
-
-│   │       └── dashboard.tsx
-
+│   │       ├── login.tsx                 # Admin login (email + OTP)
+│   │       └── dashboard.tsx             # Admin CMS dashboard
 │   ├── components/
-
 │   │   └── portfolio/
-
 │   │       └── CursorTrail.tsx
-
 │   └── lib/
-
 │       └── api/
-
-│           ├── client.ts
-
-│           ├── types.ts
-
-│           └── resources.ts
-
+│           ├── client.ts                 # API fetch wrapper + auth
+│           ├── types.ts                  # TypeScript interfaces
+│           └── resources.ts              # CRUD API factories
 ├── portfolio-backend/
-
 │   └── src/
-
-│       ├── server.js
-
+│       ├── server.js                     # Express entry point
 │       ├── controllers/
-
 │       │   ├── authController.js
-
 │       │   └── crudControllerFactory.js
-
 │       ├── models/
-
 │       │   ├── Admin.js
-
 │       │   ├── Project.js
-
 │       │   ├── Skill.js
-
 │       │   ├── Experience.js
-
 │       │   ├── Hackathon.js
-
 │       │   ├── ResearchPaper.js
-
 │       │   └── Profile.js
-
 │       ├── middleware/
-
-│       │   ├── auth.js
-
+│       │   ├── auth.js                   # JWT protect middleware
 │       │   └── errorHandler.js
-
-│       ├── routes/
-
-│       │   └── api/
-
-│       ├── config/
-
-│       │   └── db.js
-
-│       └── utils/
-
-│           └── email.js
-
+│       ├── routes/api/
+│       ├── config/db.js                  # MongoDB connection
+│       └── utils/email.js               # Resend email utility
 ├── dist/
-
-│   ├── client/
-
-│   └── server/
-
-├── server-render.mjs
-
+│   ├── client/                           # Static assets
+│   └── server/                           # SSR server bundle
+├── server-render.mjs                     # SSR entry (Render runs this)
 └── generate-index.mjs
+```
+
 ---
 
 ## 🔐 Authentication Flow
-Admin enters email + password
-Backend verifies credentials → generates 6-digit OTP
-OTP is hashed (bcrypt) and saved to MongoDB with 10-min expiry
-Resend API sends OTP to admin email
-Admin enters OTP → backend verifies hash
-JWT issued → stored in browser localStorage
-All protected API calls send: Authorization: Bearer <token>
-Backend middleware verifies JWT on every protected route
+
+```
+1. Admin enters email + password
+2. Backend verifies credentials → generates 6-digit OTP
+3. OTP hashed with bcrypt → saved to MongoDB (10-min expiry)
+4. Resend API emails OTP to admin
+5. Admin enters OTP → backend verifies hash
+6. JWT issued → stored in localStorage
+7. Protected routes receive: Authorization: Bearer <token>
+8. Backend middleware verifies JWT on every request
+```
+
 ---
 
 ## 📦 Data Models
 
-### Project
-title, description, category (Web/Mobile/API-Backend),
-
-tech[], github, demo, image, notesUrl, featured, order
-### Skill
-category (Frontend/Backend/Databases/etc),
-items[{ name }], notesUrl, order
-
-### Experience
-company, role, duration, type (Full-time/Internship/etc),
-bullets[], order
-
-### Hackathon
-name, award, project, description, tech[],
-team, date, github, demo, notesUrl, order
-
-### ResearchPaper
-title, authors, venue, year, abstract,
-tags[], pdfUrl, scholarUrl, arxivUrl, order
-
-### Profile
-name, handle, roles[], tagline, email, location,
-availability, resumeUrl, socials{ github, linkedin, twitter, email }
+| Model | Key Fields |
+|-------|-----------|
+| **Project** | title, description, category, tech[], github, demo, image, featured, order |
+| **Skill** | category, items[{ name }], notesUrl, order |
+| **Experience** | company, role, duration, type, bullets[], order |
+| **Hackathon** | name, award, project, tech[], team, date, github, demo, order |
+| **ResearchPaper** | title, authors, venue, year, abstract, tags[], pdfUrl, arxivUrl, order |
+| **Profile** | name, handle, roles[], tagline, email, location, resumeUrl, socials{} |
 
 ---
 
 ## 🌐 API Endpoints
 
 ### Public
+```
 GET  /api/health
-
 GET  /api/profile
-
 GET  /api/projects
-
 GET  /api/skills
-
 GET  /api/experience
-
 GET  /api/hackathons
-
 GET  /api/research
-
 POST /api/contact
+```
 
 ### Auth
-POST /api/auth/login
-
-POST /api/auth/verify-otp
-
-GET  /api/auth/me
-
+```
+POST /api/auth/login             → verify credentials, send OTP
+POST /api/auth/verify-otp        → verify OTP, issue JWT
+GET  /api/auth/me                → get current admin (protected)
 POST /api/auth/logout
-
-PUT  /api/auth/change-password
-
+PUT  /api/auth/change-password   → (protected)
 POST /api/auth/forgot-password
-
 POST /api/auth/reset-password
+```
 
-### Protected CRUD (requires Bearer token)
-POST   /api/projects
+### Protected CRUD (Bearer token required)
+```
+POST   /api/:resource
+PUT    /api/:resource/:id
+DELETE /api/:resource/:id
 
-PUT    /api/projects/:id
-
-DELETE /api/projects/:id
-
-(same pattern for skills, experience, hackathons, research)
+# resources: projects, skills, experience, hackathons, research
+```
 
 ---
 
 ## 🖥 Local Development
 
-### Frontend Setup
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account (or local MongoDB)
+- Resend account (free tier)
+
+### Frontend
 ```bash
 git clone https://github.com/mittalsaks/Portfolio.git
 cd Portfolio
@@ -218,7 +159,7 @@ echo "VITE_API_URL=http://localhost:5000/api" > .env
 npm run dev
 ```
 
-### Backend Setup
+### Backend
 ```bash
 cd portfolio-backend
 npm install
@@ -239,100 +180,87 @@ EOF
 node src/server.js
 ```
 
-### Build for Production
+### Production Build
 ```bash
-npm run build
+npm run build   # outputs to dist/client/ and dist/server/
 ```
 
 ---
 
-## 🚀 Deployment
+## 🚀 Deployment (Render)
 
-### Frontend — Render Web Service
+### Frontend Service
 | Setting | Value |
 |---------|-------|
-| Build Command | _(none — dist/ committed to git)_ |
+| Build Command | _(none — `dist/` committed to git)_ |
 | Start Command | `node server-render.mjs` |
-| Environment | `VITE_API_URL=https://portfolio-backend-xvo6.onrender.com/api` |
+| Env Variable | `VITE_API_URL=https://portfolio-backend-xvo6.onrender.com/api` |
 
-### Backend — Render Web Service
+### Backend Service
 | Setting | Value |
 |---------|-------|
 | Root Directory | `portfolio-backend` |
 | Start Command | `node src/server.js` |
 
 ### Backend Environment Variables
+```env
 PORT=5000
-
 MONGODB_URI=<atlas connection string>
-
 JWT_SECRET=<strong random string>
-
 JWT_EXPIRES_IN=7d
-
 NODE_ENV=production
-
 RESEND_API_KEY=re_xxxxxxxxxxxx
-
 EMAIL_TO=sakshimittal753@gmail.com
-
 ADMIN_EMAIL=sakshimittal753@gmail.com
-
 OWNER_NAME=Sakshi Mittal
-
 FRONTEND_URL=https://portfolio-sakshi.onrender.com
+```
 
-### Deploy Steps
+### Deploy
 ```bash
 npm run build
 git add .
 git commit -m "your message"
 git push origin main
+# Render auto-deploys within 2-3 minutes
 ```
 
 ---
 
 ## ⏰ Uptime Monitoring
 
-UptimeRobot pings both services every 5 minutes:
+UptimeRobot (free) pings every 5 minutes to prevent Render free-tier sleep:
 
-- Backend: `https://portfolio-backend-xvo6.onrender.com/api/health`
-- Frontend: `https://portfolio-sakshi.onrender.com`
-
----
-
-## 📧 Email System
-
-Uses **Resend** (free tier: 3000 emails/month):
-- OTP emails for admin login
-- Contact form confirmation emails
-- Password reset emails
+| Service | URL |
+|---------|-----|
+| Backend | `https://portfolio-backend-xvo6.onrender.com/api/health` |
+| Frontend | `https://portfolio-sakshi.onrender.com` |
 
 ---
 
 ## 🔒 Security Features
 
-- OTP hashed with bcrypt before DB storage
-- JWT stored in localStorage, sent as Bearer token
-- Rate limiting on auth routes
+- OTP hashed with bcrypt before DB storage (never stored plain)
+- JWT in localStorage, sent as Bearer token
+- Rate limiting on all auth routes
 - CORS restricted to frontend domain only
-- Passwords hashed with bcrypt
-- Reset tokens single-use, 10-min expiry
-- OTPs single-use, 10-min expiry
+- Passwords hashed with bcrypt via pre-save hook
+- Reset tokens & OTPs are single-use with 10-min expiry
 
 ---
 
 ## 📝 Admin Dashboard
 
-Located at `/admin/login` → `/admin/dashboard`
+> Access at `/admin/login` → `/admin/dashboard`
 
-Manage all portfolio content:
-- **Profile** — name, bio, socials, resume URL
-- **Projects** — with notesUrl
-- **Skills** — categories with skill items
-- **Experience** — company, role, bullets
-- **Hackathons** — with github/demo/notesUrl
-- **Research** — papers with PDF/Scholar/arXiv links
+| Section | What you can manage |
+|---------|-------------------|
+| Profile | Name, bio, socials, resume URL |
+| Projects | Title, tech stack, links, featured flag |
+| Skills | Categories + skill items |
+| Experience | Company, role, bullet points |
+| Hackathons | Awards, team, github/demo links |
+| Research | Papers with PDF/Scholar/arXiv links |
 
 ---
 
