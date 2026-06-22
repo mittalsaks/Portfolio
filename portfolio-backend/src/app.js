@@ -35,6 +35,7 @@ const allowedOrigins = [
   "https://portfolio-mittalsaks.vercel.app",
   "https://mittalsaks.vercel.app",
   "https://portfolio-g8b567.vercel.app",
+  "https://portfolio-sakshi.onrender.com",
 ];
 app.use(
   cors({
