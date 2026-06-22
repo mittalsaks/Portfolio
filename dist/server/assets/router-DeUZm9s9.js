@@ -2,7 +2,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, useRouter, Link, Outlet, HeadContent, Scripts, createFileRoute, lazyRouteComponent, createRouter } from "@tanstack/react-router";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useEffect } from "react";
-const appCss = "/assets/styles-CN2qPVv2.css";
+const appCss = "/assets/styles-CRa_UPZI.css";
 function reportLovableError(error, context = {}) {
   if (typeof window === "undefined") return;
   window.__lovableEvents?.captureException?.(
@@ -146,7 +146,7 @@ const Route$3 = createFileRoute("/admin/reset-password")({
   }),
   component: lazyRouteComponent($$splitComponentImporter$3, "component")
 });
-const $$splitComponentImporter$2 = () => import("./login-BWxKbr1l.js");
+const $$splitComponentImporter$2 = () => import("./login-CaaV-GYG.js");
 const Route$2 = createFileRoute("/admin/login")({
   head: () => ({
     meta: [{

@@ -25,7 +25,6 @@ function AdminLogin() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
     try {
       await authApi.login(email, password);
       setStep("otp");
@@ -44,7 +43,6 @@ function AdminLogin() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-
     try {
       await authApi.verifyOtp(email, otp);
       navigate({ to: "/admin/dashboard" });
@@ -68,12 +66,11 @@ function AdminLogin() {
   return (
     <div className="grid-bg relative min-h-dvh w-full flex items-center justify-center bg-background px-4">
       <CursorTrail />
-
       <a
         href="/"
         className="absolute left-4 top-4 font-mono text-xs text-muted-foreground hover:text-foreground"
       >
-        ← Back to site
+        {"<-"} Back to site
       </a>
 
       {step === "credentials" && (
@@ -81,7 +78,7 @@ function AdminLogin() {
           onSubmit={handleCredentialsSubmit}
           className="glass-card relative w-full max-w-sm rounded-2xl p-8"
         >
-          <p className="mb-1 font-mono text-xs text-[#00d4ff]">$ admin --login</p>
+          <p className="mb-1 font-mono text-xs text-[color:var(--c-accent)]">$ admin --login</p>
           <h1 className="mb-6 font-mono text-2xl font-bold text-gradient-neon">
             Admin Login
           </h1>
@@ -96,7 +93,7 @@ function AdminLogin() {
             onChange={(e) => setEmail(e.target.value)}
             required
             autoComplete="username"
-            className="mb-4 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-[#00d4ff]/60"
+            className="mb-4 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-[color:var(--c-accent)]/60"
           />
 
           <label className="mb-1 block text-sm text-muted-foreground" htmlFor="password">
@@ -109,7 +106,7 @@ function AdminLogin() {
             onChange={(e) => setPassword(e.target.value)}
             required
             autoComplete="current-password"
-            className="mb-4 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-[#00d4ff]/60"
+            className="mb-4 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-[color:var(--c-accent)]/60"
           />
 
           {error && (
@@ -121,11 +118,10 @@ function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className="hover-neon-blue w-full rounded-lg border border-[#00d4ff]/40 bg-transparent px-4 py-2.5 font-mono text-sm font-medium text-[#00d4ff] transition-all disabled:opacity-50"
+            className="hover-neon-blue w-full rounded-lg border border-[color:var(--c-accent)]/40 bg-transparent px-4 py-2.5 font-mono text-sm font-medium text-[color:var(--c-accent)] transition-all disabled:opacity-50"
           >
             {loading ? "Logging in..." : "Log in"}
           </button>
-
           <a
             href="/admin/forgot-password"
             className="mt-3 block text-center font-mono text-xs text-muted-foreground hover:text-foreground"
@@ -140,7 +136,7 @@ function AdminLogin() {
           onSubmit={handleOtpSubmit}
           className="glass-card relative w-full max-w-sm rounded-2xl p-8"
         >
-          <p className="mb-1 font-mono text-xs text-[#00d4ff]">$ admin --verify</p>
+          <p className="mb-1 font-mono text-xs text-[color:var(--c-accent)]">$ admin --verify</p>
           <h1 className="mb-2 font-mono text-2xl font-bold text-gradient-neon">
             Enter Code
           </h1>
@@ -163,7 +159,7 @@ function AdminLogin() {
             required
             autoComplete="one-time-code"
             placeholder="123456"
-            className="mb-4 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-center font-mono text-lg tracking-[0.3em] text-foreground outline-none transition-colors focus:border-[#00d4ff]/60"
+            className="mb-4 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-center font-mono text-lg tracking-[0.3em] text-foreground outline-none transition-colors focus:border-[color:var(--c-accent)]/60"
           />
 
           {error && (
@@ -175,7 +171,7 @@ function AdminLogin() {
           <button
             type="submit"
             disabled={loading || otp.length !== 6}
-            className="hover-neon-blue w-full rounded-lg border border-[#00d4ff]/40 bg-transparent px-4 py-2.5 font-mono text-sm font-medium text-[#00d4ff] transition-all disabled:opacity-50"
+            className="hover-neon-blue w-full rounded-lg border border-[color:var(--c-accent)]/40 bg-transparent px-4 py-2.5 font-mono text-sm font-medium text-[color:var(--c-accent)] transition-all disabled:opacity-50"
           >
             {loading ? "Verifying..." : "Verify & Log in"}
           </button>
@@ -185,7 +181,7 @@ function AdminLogin() {
             onClick={backToCredentials}
             className="mt-3 w-full text-center font-mono text-xs text-muted-foreground hover:text-foreground"
           >
-            ← Back
+            {"<-"} Back
           </button>
         </form>
       )}
