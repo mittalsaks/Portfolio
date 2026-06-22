@@ -7,4 +7,12 @@ export default defineConfig({
       entry: "server",
     },
   },
+  vite: {
+    build: {
+      minify: true,
+    },
+    define: {
+      "process.env.NODE_ENV": '"production"',
+    },
+  },
 });
