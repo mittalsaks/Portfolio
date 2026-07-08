@@ -28,7 +28,7 @@ const Hackathon     = require("./models/Hackathon");
 const ResearchPaper = require("./models/ResearchPaper");
 
 // Connect to MongoDB Atlas
-connectDB();
+// connectDB();
 
 const app = express();
 app.set('trust proxy', 1);

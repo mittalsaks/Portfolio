@@ -18,11 +18,12 @@ const errorHandler = (err, req, res, next) => {
   // Mongoose duplicate key
   if (err.code === 11000) {
     statusCode = 400;
-    message = `Duplicate value entered for field: ${Object.keys(err.keyValue)}`;
+    const field = err.keyValue ? Object.keys(err.keyValue).join(", ") : "unknown field";
+    message = `Duplicate value entered for field: ${field}`;
   }
 
   // Mongoose validation error
-  if (err.name === "ValidationError") {
+  if (err.name === "ValidationError" && err.errors) {
     statusCode = 400;
     message = Object.values(err.errors)
       .map((val) => val.message)

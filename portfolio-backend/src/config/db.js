@@ -51,6 +51,11 @@ const connectDB = async () => {
       })
       .then((mongooseInstance) => {
         console.log(`✅ MongoDB Connected: ${mongooseInstance.connection.host}`);
+        mongoose.connection.on("disconnected", () => {
+          console.log("⚠️ MongoDB disconnected, clearing cache");
+          cached.conn = null;
+          cached.promise = null;
+        });
         return mongooseInstance;
       });
   }
