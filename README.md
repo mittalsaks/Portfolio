@@ -132,7 +132,7 @@ POST /api/auth/forgot-password
 POST /api/auth/reset-password
 ```
 
-### Protected CRUD (Bearer token required)
+### Protected CRUD (Bearer token required) 
 ```
 POST   /api/:resource
 PUT    /api/:resource/:id
@@ -220,7 +220,7 @@ FRONTEND_URL=https://portfolio-sakshi.onrender.com
 ```bash
 npm run build
 git add .
-git commit -m "your message"
+git commit -m "your commit message"
 git push origin main
 # Render auto-deploys within 2-3 minutes
 ```
